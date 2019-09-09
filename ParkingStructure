@@ -1,0 +1,204 @@
+/*
+ * ParkingStructure.cpp
+ *
+ *      Author: sanjana_mac
+ */
+//Sanjana Sivakumar CS2336.001
+//The purpose of this class is to park vehicles, remove vehicles, and print the ParkingStructure object
+#include <iostream>
+#include <sstream>
+#include <string>
+#include "ParkingStructure.h"
+
+using namespace std;
+//This is the ParkingStructure class's default constructor(if the user chooses the default), this method returns a default ParkingStructure object
+//the main purpose is to build a 2D Array of ParkingSpots
+ParkingStructure::ParkingStructure() {
+	levels = 5;
+	slots = 30;
+	spots = new ParkingSpot *[levels];
+	for(int i = 0; i < levels; i++){
+		spots[i] = new ParkingSpot[slots];
+	}
+	large = 6;
+	car = 18;
+	motorcycle = 6;
+	int carSection = (slots-motorcycle)+1;
+	for(int l = 0; l < levels; l++){
+		for(int s = 0; s < slots; s++){
+			//ParkingSpot s = spots[l][s];
+			if(s >= 0 && s < large){
+				spots[l][s].setSpotSize('l');
+				//spots[l][s] = new ParkingSpot('l');
+			}
+			else if(s >= large && s < carSection){
+				spots[l][s].setSpotSize('c');
+				//spots[l][s] = new ParkingSpot('c');
+			}
+			else if(s >= carSection && s < slots){
+				spots[l][s].setSpotSize('m');
+				//spots[l][s] = new ParkingSpot('m');
+			}
+		}
+	}
+
+}
+//This is the second ParkingStructure constructor. This functions returns a ParkingStructure object based off
+//of the parameters provided. This is called on if the user chooses to have a custom ParkingStructure
+ParkingStructure::ParkingStructure(int level, int slot){
+	slots = slot;
+	levels = level;
+	spots = new ParkingSpot*[levels];
+	for(int i = 0; i < levels; i++){
+		spots[i] = new ParkingSpot[slots];
+	}
+	large = slot*(0.2);
+	car = slot*(0.6);
+	motorcycle = slot*(0.2);
+	int carSection = (slot-motorcycle)+1;
+	for(int l = 0; l < level; l++){
+		for(int s = 0; s < slot; s++){
+			if(s >= 0 && s < large){
+				spots[l][s].setSpotSize('l');
+				//spots[l][s] = new ParkingSpot('l');
+			}
+			else if(s >= large && s < carSection){
+				spots[l][s].setSpotSize('c');
+				//spots[l][s] = new ParkingSpot('c');
+			}
+			else if(s >= carSection && s < slots){
+				spots[l][s].setSpotSize('m');
+				//spots[l][s] = new ParkingSpot('m');
+			}
+		}
+	}
+}
+//This is the ParkingStructure class's destructor, there are no parameters, this function executes when an object goes out of scope
+ParkingStructure::~ParkingStructure() {
+	cout << "ParkingStructure destroyed" << endl;
+}
+//This is the ParkingStructure class's toString method, there are no parameters, and the function returns a
+//string representation of the ParkingStructure's contents
+string ParkingStructure::toString(){
+	string toString = "";
+	for(int l = 0; l < levels; l++){
+		int temp = l+1;
+		ostringstream str1;
+		str1 << temp;
+		string s = str1.str();
+		toString = toString + "Level " + s + " :";
+		for(int s = 0; s < slots; s++){
+			if(spots[l][s].full()){
+				toString += spots[l][s].getOccupy()->toString();
+			}
+			else{
+				toString += spots[l][s].toString();
+			}
+		}
+		toString += "\n";
+	}
+	return toString;
+}
+//This is the ParkingStructure class's park function. This function returns void. The paramenters are:
+//pointer to a Vehicle object, int level, int spot, this function parks the given vehicle in the given spot
+void ParkingStructure::park(Vehicle*v, int level, int spot){
+	int vehicleSize = v->getSize();
+	if(vehicleSize == 1){
+		if(!spots[level][spot].full()){
+			cout << "Parking your motorcycle" << endl;
+			spots[level][spot].setFull(true);
+			spots[level][spot].occupy = v;
+		}
+		else{
+			cout << "Spot is full!" << endl;
+		}
+	}
+	if(vehicleSize == 2){
+		if(!spots[level][spot].full()){
+			if(spots[level][spot].getSize() == 'l' || spots[level][spot].getSize() == 'c'){
+				cout << "Parking your car" << endl;
+				spots[level][spot].setFull(true);
+				spots[level][spot].occupy = v;
+			}
+			else if(spots[level][spot].getSize() == 'm'){
+				cout << "Parking spot is too small for your vehicle!" << endl;
+			}
+		}
+		else{
+			cout << "Spot is full! Cannot Park your vehicle" << endl;
+		}
+	}
+	if(vehicleSize == 3){
+		if(large < 5){
+			cout << "Not enough spots to park a bus" << endl;
+		}
+		if(large >= 5){
+			if(!spots[level][spot].full()){
+				if(spots[level][spot].getSize() != 'l'){
+					cout << "Parking spot is too small for your vehicle" << endl;
+				}
+				if(spots[level][spot].getSize() == 'l'){
+					int first;
+					int last;
+					bool fiveInARow = true;
+					for(int i = 0; i < large-5; i++){
+						first = i;
+						last = i+5;
+						for(int n = first; n < last; n++){
+							if(spots[level][i].full()){
+								fiveInARow = false;
+							}
+						}
+						if(fiveInARow) break;
+					}
+					if(first <= spot && last >= spot){
+						cout << "Parking your bus" << endl;
+						for(int i = first; i < last; i++){
+							spots[level][i].setFull(true);
+							spots[level][i].occupy = v;
+							v->setPosition(first);
+						}
+					}
+				}
+			}
+			else if(spots[level][spot].full()){
+				cout << "Spot is full";
+			}
+		}
+	}
+}
+//This is the ParkingStructure's remove function. This function takes in an int level and int spot and returns void.
+//This function removes a vehicle from a specific spot
+void ParkingStructure::remove(int level, int spot){
+	if(!spots[level][spot].full()){
+		cout<<"Spot is empty! Cannot remove vehicle from an empty spot" << endl;
+	}
+	else{
+		Vehicle* v = spots[level][spot].getOccupy();
+		if(v->getSize() == 1 || v->getSize() == 2){
+			spots[level][spot].setFull(false);
+			cout << "Vehicle Removed!" << endl;
+		}
+		else if(v->getSize() == 3){
+			int first = v->getPosition();
+			int last = v->getPosition()+5;
+			for(int i = first; i < last; i++){
+				spots[level][i].setFull(false);
+			}
+			cout << "Vehicle Removed" << endl;
+		}
+	}
+}
+//This function returns the number of large spots in the ParkingStructure
+int ParkingStructure::getLarge(){
+	return large;
+}
+//This function returns the number of compact spots in the ParkingStructure
+int ParkingStructure::getCar(){
+	return car;
+}
+//This function returns the number of motorcycle spots in the ParkingStructure
+int ParkingStructure::getMotorcycle(){
+	return motorcycle;
+}
+ /* namespace std */
