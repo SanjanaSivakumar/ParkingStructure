@@ -1,0 +1,77 @@
+/*
+ * ParkingSpot.cpp
+ *
+ *      Author: sanjana_mac
+ */
+//Sanjana Sivakumar CS2336.001
+//The purpose of this class is to set the definition for when a ParkingSpot object will be created.
+//The ParkingSpot class is used throughout by the ParkingStructure class, as a ParkingStructure is a
+//2D array of ParkingSpots
+#ifndef PARKINGSPOT_CPP_
+#include "ParkingSpot.h"
+
+using namespace std;
+//This is the ParkingSpot class's constructor, there are no parameters, this function returns a default ParkingSpot object
+ParkingSpot::ParkingSpot(){
+	occupy = nullptr;
+	size = ' ';
+	level = 0;
+	isFull = false;
+	capacity = 0;
+}
+//This is the ParkingSpot class's destructor, there are no parameters, this function executes when an object goes out of scope
+ParkingSpot::~ParkingSpot() {
+	cout << "ParkingSpot Destroyed" << endl;
+}
+//This function does not take in any parameters, and returns bool determining whether or not a ParkingSpot is full.
+//This helps with preventing a vehicle from parking in a full spot and removing from an empty spot
+bool ParkingSpot::full(){
+	return isFull;
+}
+//This function returns void and takes in a bool value. This is used for when a vehicle parks in a ParkingSpot, to set
+//the ParkingSpot to full, or to set it to empty when a vehicle is removed
+void ParkingSpot::setFull(bool full){
+	isFull = full;
+}
+//This function does not take any parameters, and returns the a char representation of the size of
+//the ParkingSpot. It prevents a Vehicle to large from parking in a smaller ParkingSpot
+char ParkingSpot::getSize(){
+	return size;
+}
+//This function does not take any parameters and returns an int representation of the size of a parking spot
+//to help compare size to park
+int ParkingSpot::getCapacity(){
+	if(size == 'l'){
+		return 3;
+	}
+	if(size == 'c'){
+		return 2;
+	}
+	if (size == 'm'){
+		return 1;
+	}
+	return -1;
+}
+//This function does not take in any parameters, and return a pointer to the Vehicle that occupies the parking spot
+Vehicle* ParkingSpot::getOccupy(){
+	return occupy;
+}
+//This function returns null and takes in the address of a Vehicle object. This is the function that actually "parks"
+//the vehicle in that it sets the value of the Vehicle object
+void ParkingSpot::setOccupy(Vehicle &v){
+	occupy = &v;
+}
+//this function takes in a char a returns void. This function sets the size of a particular ParkingSpot.
+//This is used when a ParkingSpot is created
+void ParkingSpot::setSpotSize(char spotSize){
+	size = spotSize;
+}
+//This function does not take in any parameters and returns the string representation of a ParkingSpot.
+//This function helps
+//with the ParkingStructure class's toString method, which is called when the user chooses to print out
+//the ParkingStructure
+string ParkingSpot::toString(){
+	string s(1, size);
+	return s;
+}
+#endif
