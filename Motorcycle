@@ -1,0 +1,43 @@
+/*
+ * Motorcycle.cpp
+ *
+ *      Author: sanjana_mac
+ */
+//Sanjana Sivakumar CS2336.001
+//The purpose of this class is to set the definition for when a Motorcycle object will be created.
+//This class is set up in such a way that aids in the functionality of the parking structure
+//This class is one of the derived classes of the Vehicle class
+
+#include "Motorcycle.h"
+
+using namespace std;
+//This is the Motorcycle class's constructor, there are no parameters, this function returns a default Motorcycle object
+Motorcycle::Motorcycle() {
+	position = 0;
+	size = 1;
+}
+//This is the Motorcycle class's destructor, there are no parameters, this function executes when an object goes out of scope
+Motorcycle::~Motorcycle() {
+	cout << "Motorcycle destroyed" << endl;
+}
+//This function does not take in any parameters and returns an int with the size of a Motorcycle object, which is 1.
+//This method helps with checking a vehicle's size before allowing it to park
+int Motorcycle::getSize(){
+	return 1;
+}
+//This function does not take in any parameters and returns the string, "M". This function helps
+//with the ParkingStructure class's toString method, which is called when the user chooses to print out
+//the ParkingStructure
+string Motorcycle::toString(){
+	return "M";
+}
+//This function does not take in any parameters and returns an int, whose value is the position at which
+//the Motorcycle is parked, this helps a lot with the removal of a vehicle from a ParkingSpot
+int Motorcycle::getPosition(){
+	return position;
+}
+//This function returns void, and takes in an int as a parameter. The parameter is the value of the position
+//that the user wishes to park their motorcycle. This function helps with the parking of a vehicle from a ParkingSpot
+void Motorcycle::setPosition(int p){
+	position = p;
+}
