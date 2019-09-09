@@ -1,0 +1,139 @@
+//============================================================================
+// Name        : 2336ParkingStructure.cpp
+// Author      : Sanjana Sivakumar
+// Version     :
+// Copyright   : Your copyright notice
+// Description : Parking Structure Project in C++, Ansi-style
+//============================================================================
+//Sanjana Sivakumar CS2336.001
+//This class provides the main method, with which the user directly interacts with to create and operate their ParkingStructure
+//This project was created in the eclipse ide
+//Print lines will direct user input
+#include <iostream>
+#include "ParkingStructure.h";
+using namespace std;
+
+int main() {
+	ParkingStructure *Struct;
+	string Q1;
+	string Q2;
+	string operations = "parking structure functions >> Park Vehicle(Press P), Remove Vehicle(Press R), Print Parking Structure(Press N), Exit Program(Press E)";
+	cout << "Would you like to have a custom parking structure? (Y for yes, N for no)" << endl;
+	cin >> Q1;
+	//cout << "Building your parking structure..." << endl;
+	while(Q1 != "Y" && Q1 != "N"){
+		cout << "invalid input, please enter Y or N" << endl;
+		cin >> Q1;
+	}
+	if(Q1 == "Y"){
+		int levels;
+		int rows;
+		int spotsPerRow;
+		int spots;
+		cout << "How many levels would you like?" << endl;
+		cin >> levels;
+		if(levels <= 0){
+			cout << "Number of levels must be greater than zero, Please enter a valid number of levels" << endl;
+			cin >> levels;
+		}
+		cout << "How many rows would you like?" << endl;
+		cin >> rows;
+		if(rows < 1){
+			cout << "Minimum number of rows is one, Please enter a valid number of rows" << endl;
+			cin >> rows;
+		}
+		cout << "How many spots per row would you like?" << endl;
+		cin >> spotsPerRow;
+		if(spotsPerRow < 5){
+			cout << "Minimum number of spots per row is 5, Please enter a valid number of spots per row" << endl;
+			cin >> spotsPerRow;
+		}
+		spots = rows*spotsPerRow;
+		Struct = new ParkingStructure(levels, spots);
+	}
+	else if(Q1 == "N"){
+		Struct = new ParkingStructure();
+	}
+	//string Q2;
+	//string operations = "parking structure functions >> Park Vehicle(Press P), Remove Vehicle(Press R), Print Parking Structure(Press N), Exit Program(Press E)";
+	cout << operations << endl;
+	cin >> Q2;
+	if(Q2 == "E"){
+		cout << "Bye!" << endl;
+	}
+	while(Q2 != "E"){
+		while(Q2 != "P" && Q2 != "R" && Q2 != "N" && Q2 != "E"){
+			cout << "Invalid input, Let's try again" << endl;
+			cout << operations << endl;
+			cin >> Q2;
+		}
+		if(Q2 == "P"){
+			string vehicle;
+			Vehicle* v;
+			cout << "Vehicles you can park >> Motorcycle(press M), Car(Press C), Bus(Press B)" << endl;
+			cin >> vehicle;
+			while(vehicle != "M" && vehicle != "C" && vehicle != "B"){
+				cout << "Invalid input, Let's try again" << endl;
+				cout << "Vehicles you can park >> Motorcycle(press M), Car(Press C), Bus(Press B)" << endl;
+				cin >> vehicle;
+			}
+			if(vehicle == "M"){
+				v = new Motorcycle();
+			}
+			else if(vehicle == "C"){
+				v = new Car();
+			}
+			else if(vehicle == "B"){
+				v = new Bus();
+			}
+			int level;
+			int spot;
+			int row;
+			cout << "Which level do you want to park in?" << endl;
+			cin >> level;
+			level--;
+			cout << "Which row do you want to park in?" << endl;
+			cin >> row;
+			row--;
+			cout << "Which spot in the row do you want to park in?" << endl;
+			cin >> spot;
+			spot--;
+			int spotFinal = spot*row;
+			Struct->park(v, level, spotFinal);
+		}
+		if(Q2 == "R"){
+			int level;
+			int spot;
+			int row;
+			cout << "Which level do you want to remove from?" << endl;
+			cin >> level;
+			level--;
+			cout << "Which row do you want to remove from?" << endl;
+			cin >> row;
+			row--;
+			cout << "Which spot in the row do you want to remove from" << endl;
+			cin >> spot;
+			spot--;
+			int spotFinal = spot*row;
+			Struct->remove(level, spotFinal);
+		}
+		if (Q2 == "N"){
+			cout << Struct->toString() << endl;
+		}
+		string Q3;
+		cout << "Do you want to continue? (Press Y for yes, and N for no)" << endl;
+		cin >> Q3;
+		while(Q3 != "N" && Q3 != "Y"){
+			cout << "Invalid input, Press Y or N" << endl;
+			cin >> Q3;
+		}
+		if(Q3 == "N"){
+			Q2 = "E";
+		}
+		else if(Q3 == "Y"){
+			cout << operations << endl;
+			cin >> Q2;
+		}
+	}
+	cout << "Bye!" << endl;
+}
